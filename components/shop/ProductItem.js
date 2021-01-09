@@ -1,22 +1,33 @@
 import React from "react";
-import { View, Image, Button, StyleSheet } from "react-native";
+import { View, Image, Button, TouchableOpacity, TouchableNativeFeedback, Platform, StyleSheet } from "react-native";
 
 import BodyText from "../main/BodyText";
 import Colors from "../../constants/colors";
 
 const ProductItem = (props) => {
+  let TouchableCmp = TouchableOpacity;
+  if (Platform.OS === "android" && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+
   return (
     <View style={styles.product}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{uri: props.image}}/>
-      </View>
-      <View style={styles.detail}>
-        <BodyText style={styles.title}>{props.title}</BodyText>
-        <BodyText style={styles.price}>${props.price.toFixed(2)}</BodyText>
-      </View>
-      <View style={styles.buttonContainer}>
-        <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>
-        <Button color={Colors.primary} title="To Cart" onPress={props.onAddToCart}/>
+      <View style={styles.touchable}>
+        <TouchableCmp onPress={props.onViewDetail} useForeground>
+          <View>
+              <View style={styles.imageContainer}>
+                <Image style={styles.image} source={{uri: props.image}}/>
+              </View>
+              <View style={styles.detail}>
+                <BodyText style={styles.title}>{props.title}</BodyText>
+                <BodyText style={styles.price}>${props.price.toFixed(2)}</BodyText>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>
+                <Button color={Colors.primary} title="To Cart" onPress={props.onAddToCart}/>
+              </View>
+          </View>
+        </TouchableCmp>
       </View>
     </View>
   );
@@ -33,6 +44,10 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     height: 300,
     margin: 20,
+  },
+  touchable: {
+    borderRadius: 10,
+    overflow: "hidden",
   },
   imageContainer: {
     width: "100%",
@@ -51,8 +66,9 @@ const styles = StyleSheet.create({
     height: "15%",
   },
   title: {
+    fontFamily: "open-sans-bold",
     fontSize: 18,
-    marginVertical: 4,
+    marginVertical: 2,
   },
   price: {
     fontSize: 14,

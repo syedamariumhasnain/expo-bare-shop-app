@@ -6,7 +6,8 @@ import {
 } from "@react-navigation/stack";
 import { Platform } from "react-native";
 
-import ProductsOverviewScreen from "../screens/shop/ProductsOverviewScreen";
+import ProductsOverviewScreen, {screenOptions as ProductsOverviewOptions} from "../screens/shop/ProductsOverviewScreen";
+import ProductDetailScreen, {screenOptions as ProductDetailOptions} from "../screens/shop/ProductDetailScreen";
 import Colors from "../constants/colors";
 
 const defaultStackNavOptions = {
@@ -26,11 +27,16 @@ const defaultStackNavOptions = {
 const ProductsNavigator = createStackNavigator();
 const ProductsStackNavigator = (props) => {
   return (
-    <ProductsNavigator.Navigator>
+    <ProductsNavigator.Navigator screenOptions={defaultStackNavOptions}>
       <ProductsNavigator.Screen
         name="ProductsOverview"
         component={ProductsOverviewScreen}
-        options={defaultStackNavOptions}
+        options={ProductsOverviewOptions}
+      />
+      <ProductsNavigator.Screen
+        name="ProductDetail"
+        component={ProductDetailScreen}
+        options={ProductDetailOptions}
       />
     </ProductsNavigator.Navigator>
   );
