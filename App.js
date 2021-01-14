@@ -4,15 +4,21 @@ import AppLoading from 'expo-app-loading'
 import { StatusBar } from 'expo-status-bar';
 import { createStore, combineReducers } from "redux";
 import { Provider } from "react-redux";
+// import { composeWithDevTools } from "redux-devtools-extension";
 
 import productsReducer from "./store/reducers/products";
+import cartReducer from "./store/reducers/cart";
 import AppNavigator from "./navigation/ShopNavigator";
 
 const rootReducer = combineReducers({
-  products: productsReducer
+  products: productsReducer,
+  cart: cartReducer
 });
 
 const store = createStore(rootReducer);
+
+// apply only in development (when testing redux), & remove it in production code
+// const store = createStore(rootReducer, composeWithDevTools());
 
 const fetchFonts = () => {
   return Font.loadAsync({

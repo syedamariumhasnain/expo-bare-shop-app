@@ -6,8 +6,15 @@ import {
 } from "@react-navigation/stack";
 import { Platform } from "react-native";
 
-import ProductsOverviewScreen, {screenOptions as ProductsOverviewOptions} from "../screens/shop/ProductsOverviewScreen";
-import ProductDetailScreen, {screenOptions as ProductDetailOptions} from "../screens/shop/ProductDetailScreen";
+import ProductsOverviewScreen, {
+  screenOptions as ProductsOverviewOptions,
+} from "../screens/shop/ProductsOverviewScreen";
+import CartScreen, {
+  screenOptions as CartOptions,
+} from "../screens/shop/CartScreen";
+import ProductDetailScreen, {
+  screenOptions as ProductDetailOptions,
+} from "../screens/shop/ProductDetailScreen";
 import Colors from "../constants/colors";
 
 const defaultStackNavOptions = {
@@ -37,6 +44,11 @@ const ProductsStackNavigator = (props) => {
         name="ProductDetail"
         component={ProductDetailScreen}
         options={ProductDetailOptions}
+      />
+      <ProductsNavigator.Screen
+        name="Cart"
+        component={CartScreen}
+        options={CartOptions}
       />
     </ProductsNavigator.Navigator>
   );

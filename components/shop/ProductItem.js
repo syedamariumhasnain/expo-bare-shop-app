@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Image, Button, TouchableOpacity, TouchableNativeFeedback, Platform, StyleSheet } from "react-native";
 
-import BodyText from "../main/BodyText";
+import BodyText from "../UI/BodyText";
 import Colors from "../../constants/colors";
 
 const ProductItem = (props) => {
