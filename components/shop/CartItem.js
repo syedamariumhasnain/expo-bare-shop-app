@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  Platform,
-  TouchableOpacity,
-  StyleSheet,
-} from "react-native";
+import { View, Platform, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import BodyText from "../../components/UI/BodyText";
@@ -13,9 +7,9 @@ import BodyText from "../../components/UI/BodyText";
 const CartItem = (props) => {
   return (
     <View style={styles.cartItem}>
-      <View style={styles.itemData}>
+      <View style={{ ...styles.itemData, width: "60%" }}>
         <BodyText style={styles.quantity}>{props.quantity} </BodyText>
-        <BodyText style={styles.mainText}>{props.title}</BodyText>
+        <BodyText style={styles.mainText} numberOfLines={1} >{props.title}</BodyText>
       </View>
       <View style={styles.itemData}>
         <BodyText style={styles.mainText}>${props.amount}</BodyText>
@@ -37,7 +31,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: 20,
+    marginHorizontal: 4,
   },
   itemData: {
     flexDirection: "row",
