@@ -6,6 +6,7 @@ import BodyText from "../../components/UI/BodyText";
 import Colors from "../../constants/colors";
 import CartItem from "../../components/shop/CartItem";
 import * as cartActions from "../../store/actions/cart";
+import * as ordersActions from "../../store/actions/orders";
 
 const CartScreen = (props) => {
   const cartTotalAmount = useSelector((state) => state.cart.totalAmount);
@@ -39,6 +40,9 @@ const CartScreen = (props) => {
           color={Colors.accent}
           title="Order Now"
           disabled={cartItems.length === 0}
+          onPress = {() => {
+            dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+          }}
         />
       </View>
       <FlatList
