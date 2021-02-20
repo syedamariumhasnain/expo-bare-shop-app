@@ -1,8 +1,14 @@
 import React from "react";
-import { View, Image, Button, TouchableOpacity, TouchableNativeFeedback, Platform, StyleSheet } from "react-native";
+import {
+  View,
+  Image,
+  TouchableOpacity,
+  TouchableNativeFeedback,
+  Platform,
+  StyleSheet,
+} from "react-native";
 
 import BodyText from "../UI/BodyText";
-import Colors from "../../constants/colors";
 
 const ProductItem = (props) => {
   let TouchableCmp = TouchableOpacity;
@@ -13,19 +19,18 @@ const ProductItem = (props) => {
   return (
     <View style={styles.product}>
       <View style={styles.touchable}>
-        <TouchableCmp onPress={props.onViewDetail} useForeground>
+        <TouchableCmp onPress={props.onSelect} useForeground>
           <View>
-              <View style={styles.imageContainer}>
-                <Image style={styles.image} source={{uri: props.image}}/>
-              </View>
-              <View style={styles.detail}>
-                <BodyText style={styles.title}>{props.title}</BodyText>
-                <BodyText style={styles.price}>${props.price.toFixed(2)}</BodyText>
-              </View>
-              <View style={styles.buttonContainer}>
-                <Button color={Colors.primary} title="View Details" onPress={props.onViewDetail}/>
-                <Button color={Colors.primary} title="To Cart" onPress={props.onAddToCart}/>
-              </View>
+            <View style={styles.imageContainer}>
+              <Image style={styles.image} source={{ uri: props.image }} />
+            </View>
+            <View style={styles.detail}>
+              <BodyText style={styles.title}>{props.title}</BodyText>
+              <BodyText style={styles.price}>
+                ${props.price.toFixed(2)}
+              </BodyText>
+            </View>
+            <View style={styles.buttonContainer}>{props.children}</View>
           </View>
         </TouchableCmp>
       </View>

@@ -20,6 +20,9 @@ import ProductDetailScreen, {
 import OrdersScreen, {
   screenOptions as OrdersOptions,
 } from "../screens/shop/OrdersScreen";
+import UserProductsScreen, {
+  screenOptions as UserProductsOptions,
+} from "../screens/user/UserProductsScreen";
 
 import Colors from "../constants/colors";
 
@@ -73,6 +76,19 @@ const OrdersStackNavigator = (props) => {
   );
 };
 
+const UserProductsNavigator = createStackNavigator();
+const UserProductsStackNavigator = (props) => {
+  return (
+    <UserProductsNavigator.Navigator screenOptions={defaultStackNavOptions}>
+      <UserProductsNavigator.Screen
+        name="UserProductsScreen"
+        component={UserProductsScreen}
+        options={UserProductsOptions}
+      />
+    </UserProductsNavigator.Navigator>
+  );
+};
+
 const MainNavigator = createDrawerNavigator();
 const MainDrawerNavigator = (props) => {
   return (
@@ -83,9 +99,9 @@ const MainDrawerNavigator = (props) => {
       drawerContentOptions={{
         activeTintColor: Colors.primary,
         activeBackgroundColor: "transparent",
-        labelStyle:{
-          fontFamily: "open-sans-bold"
-        }
+        labelStyle: {
+          fontFamily: "open-sans-bold",
+        },
       }}
       // screenOptions={{
       //   headerShown: false,
@@ -97,7 +113,11 @@ const MainDrawerNavigator = (props) => {
         options={{
           drawerLabel: "Products",
           drawerIcon: (props) => (
-            <Ionicons name={Platform.OS === "android" ? "md-cart" : "ios-cart"} size={23} color={props.color} />
+            <Ionicons
+              name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+              size={23}
+              color={props.color}
+            />
           ),
         }}
       />
@@ -107,7 +127,25 @@ const MainDrawerNavigator = (props) => {
         options={{
           drawerLabel: "Orders",
           drawerIcon: (props) => (
-            <Ionicons name={Platform.OS === "android" ? "md-list" : "ios-list"} size={23} color={props.color} />
+            <Ionicons
+              name={Platform.OS === "android" ? "md-list" : "ios-list"}
+              size={23}
+              color={props.color}
+            />
+          ),
+        }}
+      />
+      <MainNavigator.Screen
+        name="Admin"
+        component={UserProductsStackNavigator}
+        options={{
+          drawerLabel: "Admin",
+          drawerIcon: (props) => (
+            <Ionicons
+              name={Platform.OS === "android" ? "md-create" : "ios-create"}
+              size={23}
+              color={props.color}
+            />
           ),
         }}
       />

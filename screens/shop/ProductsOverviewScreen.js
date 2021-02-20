@@ -1,11 +1,19 @@
 import React from "react";
-import { FlatList, Text, Platform } from "react-native";
+import { FlatList, Button, Platform } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
+import Colors from "../../constants/colors";
+
+const selectItemHandler = (id, title, navData) => {
+  navData.navigate("ProductDetail", {
+    productId: id,
+    productTitle: title,
+  });
+};
 
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
@@ -20,16 +28,33 @@ const ProductsOverviewScreen = (props) => {
           title={itemData.item.title}
           price={itemData.item.price}
           image={itemData.item.imageUrl}
-          onViewDetail={() => {
-            props.navigation.navigate("ProductDetail", {
-              productId: itemData.item.id,
-              productTitle: itemData.item.title,
-            });
+          onSelect={() => {
+            selectItemHandler(
+              itemData.item.id,
+              itemData.item.title,
+              props.navigation
+            );
           }}
-          onAddToCart={() => {
-            dispatch(cartActions.addToCart(itemData.item));
-          }}
-        />
+        >
+          <Button
+            color={Colors.primary}
+            title="View Details"
+            onPress={() => {
+              selectItemHandler(
+                itemData.item.id,
+                itemData.item.title,
+                props.navigation
+              );
+            }}
+          />
+          <Button
+            color={Colors.primary}
+            title="To Cart"
+            onPress={() => {
+              dispatch(cartActions.addToCart(itemData.item));
+            }}
+          />
+        </ProductItem>
       )}
     />
   );
@@ -58,7 +83,7 @@ export const screenOptions = (navData) => {
             title="Cart"
             iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
             onPress={() => {
-              navData.navigation.navigate('Cart');
+              navData.navigation.navigate("Cart");
             }}
           />
         </HeaderButtons>
