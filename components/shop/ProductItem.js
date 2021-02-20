@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   detail: {
     paddingHorizontal: 10,
     alignItems: "center",
-    height: "15%",
+    height: "17%",
   },
   title: {
     fontFamily: "open-sans-bold",
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 20,
     alignItems: "center",
-    height: "25%",
+    height: "23%",
   },
 });
 

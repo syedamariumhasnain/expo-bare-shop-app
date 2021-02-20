@@ -23,6 +23,9 @@ import OrdersScreen, {
 import UserProductsScreen, {
   screenOptions as UserProductsOptions,
 } from "../screens/user/UserProductsScreen";
+import EditProductScreen, {
+  screenOptions as EditProductOptions,
+} from "../screens/user/EditProductScreen";
 
 import Colors from "../constants/colors";
 
@@ -81,9 +84,14 @@ const UserProductsStackNavigator = (props) => {
   return (
     <UserProductsNavigator.Navigator screenOptions={defaultStackNavOptions}>
       <UserProductsNavigator.Screen
-        name="UserProductsScreen"
+        name="UserProducts"
         component={UserProductsScreen}
         options={UserProductsOptions}
+      />
+      <UserProductsNavigator.Screen
+        name="EditProduct"
+        component={EditProductScreen}
+        options={EditProductOptions}
       />
     </UserProductsNavigator.Navigator>
   );

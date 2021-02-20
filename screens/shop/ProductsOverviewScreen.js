@@ -8,16 +8,16 @@ import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from "../../store/actions/cart";
 import Colors from "../../constants/colors";
 
-const selectItemHandler = (id, title, navData) => {
-  navData.navigate("ProductDetail", {
-    productId: id,
-    productTitle: title,
-  });
-};
-
 const ProductsOverviewScreen = (props) => {
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
+
+  const selectItemHandler = (id, title) => {
+    props.navigation.navigate("ProductDetail", {
+      productId: id,
+      productTitle: title,
+    });
+  };
 
   return (
     <FlatList
@@ -29,22 +29,14 @@ const ProductsOverviewScreen = (props) => {
           price={itemData.item.price}
           image={itemData.item.imageUrl}
           onSelect={() => {
-            selectItemHandler(
-              itemData.item.id,
-              itemData.item.title,
-              props.navigation
-            );
+            selectItemHandler(itemData.item.id, itemData.item.title);
           }}
         >
           <Button
             color={Colors.primary}
             title="View Details"
             onPress={() => {
-              selectItemHandler(
-                itemData.item.id,
-                itemData.item.title,
-                props.navigation
-              );
+              selectItemHandler(itemData.item.id, itemData.item.title);
             }}
           />
           <Button
