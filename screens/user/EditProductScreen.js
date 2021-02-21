@@ -2,10 +2,10 @@ import React, { useEffect, useCallback, useReducer } from "react";
 import {
   View,
   ScrollView,
-  TextInput,
   Platform,
   Alert,
   StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
@@ -143,64 +143,71 @@ const EditProductScreen = (props) => {
   );
 
   return (
-    <ScrollView>
-      <View style={styles.form}>
-        <Input
-          // to avoiid inputChangeHandler.bind(this, 'title') we are passing title in 'id' prop, avoiding infinite loop issue.
-          id="title"
-          label="Title"
-          errorText="Please enter a valid title!"
-          keyboardType="default"
-          autoCapitalize="sentences"
-          autoCorrect
-          returnKeyType="next"
-          onInputChange={inputChangeHandler}
-          initialValue={editProduct ? editProduct.title : ""}
-          initiallyValid={!!editProduct}
-          required
-        />
-        <Input
-          id="imageUrl"
-          label="Image URL"
-          errorText="Please enter a valid image url!"
-          keyboardType="default"
-          returnKeyType="next"
-          onInputChange={inputChangeHandler}
-          initialValue={editProduct ? editProduct.imageUrl : ""}
-          initiallyValid={!!editProduct}
-          required
-        />
-        {editProduct ? null : (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      // behavior= {Platform.OS === "android" ? "position" : "padding"}
+      behavior= "padding"
+      // keyboardVerticalOffset={1}
+    >
+      <ScrollView>
+        <View style={styles.form}>
           <Input
-            id="price"
-            label="Price"
-            errorText="Please enter a valid price!"
-            keyboardType="decimal-pad"
+            // to avoiid inputChangeHandler.bind(this, 'title') we are passing title in 'id' prop, avoiding infinite loop issue.
+            id="title"
+            label="Title"
+            errorText="Please enter a valid title!"
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect
             returnKeyType="next"
             onInputChange={inputChangeHandler}
-            // initialValue={editProduct ? editProduct.price : ""}
-            // initiallyValid={!!editProduct}
+            initialValue={editProduct ? editProduct.title : ""}
+            initiallyValid={!!editProduct}
             required
-            min={0.1}
           />
-        )}
-        <Input
-          id="description"
-          label="Description"
-          errorText="Please enter a valid description!"
-          keyboardType="default"
-          autoCapitalize="sentences"
-          autoCorrect
-          multiline
-          numberOfLines={3}
-          onInputChange={inputChangeHandler}
-          initialValue={editProduct ? editProduct.description : ""}
-          initiallyValid={!!editProduct}
-          required
-          minLength={5}
-        />
-      </View>
-    </ScrollView>
+          <Input
+            id="imageUrl"
+            label="Image URL"
+            errorText="Please enter a valid image url!"
+            keyboardType="default"
+            returnKeyType="next"
+            onInputChange={inputChangeHandler}
+            initialValue={editProduct ? editProduct.imageUrl : ""}
+            initiallyValid={!!editProduct}
+            required
+          />
+          {editProduct ? null : (
+            <Input
+              id="price"
+              label="Price"
+              errorText="Please enter a valid price!"
+              keyboardType="decimal-pad"
+              returnKeyType="next"
+              onInputChange={inputChangeHandler}
+              // initialValue={editProduct ? editProduct.price : ""}
+              // initiallyValid={!!editProduct}
+              required
+              min={0.1}
+            />
+          )}
+          <Input
+            id="description"
+            label="Description"
+            errorText="Please enter a valid description!"
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect
+            multiline
+            numberOfLines={3}
+            onInputChange={inputChangeHandler}
+            initialValue={editProduct ? editProduct.description : ""}
+            initiallyValid={!!editProduct}
+            required
+            minLength={5}
+          />
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

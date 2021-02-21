@@ -15,11 +15,11 @@ const inputReducer = (state, action) => {
         value: action.value,
         isValid: action.isValid,
       };
-      case INPUT_BLUR:
-        return {
-          ...state,
-          touched: true,
-        }
+    case INPUT_BLUR:
+      return {
+        ...state,
+        touched: true,
+      };
     default:
       return state;
   }
@@ -33,7 +33,7 @@ const Input = (props) => {
     touched: false,
   });
 
-  // props is an addition dependenct thats why we does object destructuring to avoid getting infinite loop using props, while here we only care for onInputChange and id 
+  // props is an addition dependenct thats why we does object destructuring to avoid getting infinite loop using props, while here we only care for onInputChange and id
 
   const { onInputChange, id } = props;
   useEffect(() => {
@@ -44,6 +44,7 @@ const Input = (props) => {
 
   // Validating any input by help of props comming with it
   const textChangeHandler = (text) => {
+    // here we can also add url validation RegEx to validate url
     const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     let isValid = true;
@@ -81,8 +82,10 @@ const Input = (props) => {
         onChangeText={textChangeHandler}
         onBlur={lostFocusHandler}
       />
-      {!inputState.isValid && (
-        <BodyText>{props.errorText}</BodyText>
+      {!inputState.isValid && inputState.touched && (
+        <View style={styles.errorContainer}>
+          <BodyText style={styles.errorText}>{props.errorText}</BodyText>
+        </View>
       )}
     </View>
   );
@@ -101,6 +104,13 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     borderBottomColor: "#ccc",
     borderBottomWidth: 1,
+  },
+  errorContainer: {
+    marginVertical: 5,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 13,
   },
 });
 
