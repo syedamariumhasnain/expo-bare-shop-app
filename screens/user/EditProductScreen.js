@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   ScrollView,
@@ -6,11 +6,12 @@ import {
   Platform,
   StyleSheet,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
 import BodyText from "../../components/UI/BodyText";
+import * as productsAction from "../../store/actions/products";
 
 // This screen/code will perform conditional displaying for ADD and EDIT:
 // if, get productId prop along with navigation, means EDIT
@@ -31,6 +32,36 @@ const EditProductScreen = (props) => {
   const [description, setDescription] = useState(
     editProduct ? editProduct.description : ""
   );
+
+  const dispatch = useDispatch();
+
+  const submitHandler = useCallback(() => {
+    if (editProduct) {
+      dispatch(productsAction.updateProduct(prodId, title, description, imageUrl));
+    } else {
+      // to convert price from "string" to "number", we write +price
+      dispatch(productsAction.createProduct(title, description, imageUrl, +price))
+    }
+    props.navigation.goBack();
+  }, [dispatch, prodId, title, description, imageUrl, price]);
+  
+  useEffect(() => {
+    props.navigation.setOptions({
+      headerRight: () => {
+        return (
+          <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+            <Item
+              title="Save"
+              iconName={
+                Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
+              }
+              onPress={submitHandler}
+            />
+          </HeaderButtons>
+        );
+      },
+    });
+  }, [submitHandler]);
 
   return (
     <ScrollView>
@@ -97,20 +128,7 @@ export const screenOptions = (navData) => {
   return {
     headerTitle: navData.route.params.productId
       ? "Edit Product"
-      : "Add Product",
-    headerRight: () => {
-      return (
-        <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-          <Item
-            title="Save"
-            iconName={
-              Platform.OS === "android" ? "md-checkmark" : "ios-checkmark"
-            }
-            onPress={() => {}}
-          />
-        </HeaderButtons>
-      );
-    },
+      : "Add Product"
   };
 };
 
