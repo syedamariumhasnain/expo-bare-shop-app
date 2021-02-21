@@ -11,7 +11,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
-import BodyText from "../../components/UI/BodyText";
+import Input from "../../components/UI/Input";
 import * as productsAction from "../../store/actions/products";
 
 // This screen/code will perform conditional displaying for ADD and EDIT:
@@ -19,7 +19,10 @@ import * as productsAction from "../../store/actions/products";
 // other wise it should work for ADD
 // because EDIT is navigated here with productId prop but ADD don't
 
+// created action named FORM_INPUT_UPDATE
 const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE";
+
+// created reducer named formReducer
 const formReducer = (state, action) => {
   if (action.type === FORM_INPUT_UPDATE) {
     const updateValues = {
@@ -127,64 +130,75 @@ const EditProductScreen = (props) => {
   }, [submitHandler]);
 
   // dispatching action for FORM_INPUT_UPDATE along with data we want to use in reducer
-  const textChangeHandler = (inputIdentifier, text) => {
-    let isValid = false;
-    if (text.trim().length > 0) {
-      isValid = true;
-    }
-    dispatchFormState({
-      type: FORM_INPUT_UPDATE,
-      value: text,
-      isValid: isValid,
-      input: inputIdentifier,
-    });
-  };
+  const inputChangeHandler = useCallback(
+    (inputIdentifier, inputValue, inputValidity) => {
+      dispatchFormState({
+        type: FORM_INPUT_UPDATE,
+        value: inputValue,
+        isValid: inputValidity,
+        input: inputIdentifier,
+      });
+    },
+    [dispatchFormState]
+  );
 
   return (
     <ScrollView>
       <View style={styles.form}>
-        <View style={styles.formControl}>
-          <BodyText style={styles.label}>Title</BodyText>
-          <TextInput
-            style={styles.input}
-            value={formState.inputValues.title}
-            onChangeText={textChangeHandler.bind(this, "title")}
-            keyboardType="default"
-            autoCapitalize="sentences"
-            autoCorrect
-            returnKeyType="next"
-            onEndEditing={() => console.log("onEndEditing")}
-            onSubmitEditing={() => console.log("onSubmitEditing")}
-          />
-        </View>
-        {!formState.inputValidities.title && <BodyText>Please enter a valid Title</BodyText>}
-        <View style={styles.formControl}>
-          <BodyText style={styles.label}>Image URL</BodyText>
-          <TextInput
-            style={styles.input}
-            value={formState.inputValues.imageUrl}
-            onChangeText={textChangeHandler.bind(this, "imageUrl")}
-          />
-        </View>
+        <Input
+          // to avoiid inputChangeHandler.bind(this, 'title') we are passing title in 'id' prop, avoiding infinite loop issue.
+          id="title"
+          label="Title"
+          errorText="Please enter a valid title!"
+          keyboardType="default"
+          autoCapitalize="sentences"
+          autoCorrect
+          returnKeyType="next"
+          onInputChange={inputChangeHandler}
+          initialValue={editProduct ? editProduct.title : ""}
+          initiallyValid={!!editProduct}
+          required
+        />
+        <Input
+          id="imageUrl"
+          label="Image URL"
+          errorText="Please enter a valid image url!"
+          keyboardType="default"
+          returnKeyType="next"
+          onInputChange={inputChangeHandler}
+          initialValue={editProduct ? editProduct.imageUrl : ""}
+          initiallyValid={!!editProduct}
+          required
+        />
         {editProduct ? null : (
-          <View style={styles.formControl}>
-            <BodyText style={styles.label}>Price</BodyText>
-            <TextInput
-              style={styles.input}
-              value={formState.inputValues.price}
-              onChangeText={textChangeHandler.bind(this, "price")}
-              keyboardType="numeric"
-            />
-          </View>
-        )}
-        <View style={styles.formControl}>
-          <BodyText style={styles.label}>Description</BodyText>
-          <TextInput
-            style={styles.input}
-            value={formState.inputValues.description}
-            onChangeText={textChangeHandler.bind(this, "description")}
+          <Input
+            id="price"
+            label="Price"
+            errorText="Please enter a valid price!"
+            keyboardType="decimal-pad"
+            returnKeyType="next"
+            onInputChange={inputChangeHandler}
+            // initialValue={editProduct ? editProduct.price : ""}
+            // initiallyValid={!!editProduct}
+            required
+            min={0.1}
           />
-        </View>
+        )}
+        <Input
+          id="description"
+          label="Description"
+          errorText="Please enter a valid description!"
+          keyboardType="default"
+          autoCapitalize="sentences"
+          autoCorrect
+          multiline
+          numberOfLines={3}
+          onInputChange={inputChangeHandler}
+          initialValue={editProduct ? editProduct.description : ""}
+          initiallyValid={!!editProduct}
+          required
+          minLength={5}
+        />
       </View>
     </ScrollView>
   );
