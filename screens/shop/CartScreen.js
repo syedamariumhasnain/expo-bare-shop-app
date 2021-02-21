@@ -34,6 +34,7 @@ const CartScreen = (props) => {
         <BodyText style={styles.summaryText}>
           Total:{" "}
           <BodyText style={styles.amount}>
+            {/* Due to deleting cart products (continious reduction) javascript makes negative value in point, So to avoid that minus sign in our cart total we use this formula */}
             ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
           </BodyText>
         </BodyText>
