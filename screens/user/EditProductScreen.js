@@ -4,6 +4,7 @@ import {
   ScrollView,
   TextInput,
   Platform,
+  Alert,
   StyleSheet,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +26,7 @@ const EditProductScreen = (props) => {
   );
 
   const [title, setTitle] = useState(editProduct ? editProduct.title : "");
+  const [titleIsValid, setTitleIsValid] = useState(false);
   const [imageUrl, setImageUrl] = useState(
     editProduct ? editProduct.imageUrl : ""
   );
@@ -36,15 +38,25 @@ const EditProductScreen = (props) => {
   const dispatch = useDispatch();
 
   const submitHandler = useCallback(() => {
+    if (!titleIsValid) {
+      Alert.alert("Wrong Input", "please check the errors in the form", [
+        { text: "Okay" },
+      ]);
+      return;
+    }
     if (editProduct) {
-      dispatch(productsAction.updateProduct(prodId, title, description, imageUrl));
+      dispatch(
+        productsAction.updateProduct(prodId, title, description, imageUrl)
+      );
     } else {
       // to convert price from "string" to "number", we write +price
-      dispatch(productsAction.createProduct(title, description, imageUrl, +price))
+      dispatch(
+        productsAction.createProduct(title, description, imageUrl, +price)
+      );
     }
     props.navigation.goBack();
-  }, [dispatch, prodId, title, description, imageUrl, price]);
-  
+  }, [dispatch, prodId, title, description, imageUrl, price, titleIsValid]);
+
   useEffect(() => {
     props.navigation.setOptions({
       headerRight: () => {
@@ -63,6 +75,15 @@ const EditProductScreen = (props) => {
     });
   }, [submitHandler]);
 
+  const titleChangeHandler = (text) => {
+    if (text.trim().length === 0) {
+      setTitleIsValid(false);
+    } else {
+      setTitleIsValid(true);
+    }
+    setTitle(text);
+  };
+
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -71,9 +92,16 @@ const EditProductScreen = (props) => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={(text) => setTitle(text)}
+            onChangeText={titleChangeHandler}
+            keyboardType="default"
+            autoCapitalize="sentences"
+            autoCorrect
+            returnKeyType="next"
+            onEndEditing={() => console.log("onEndEditing")}
+            onSubmitEditing={() => console.log("onSubmitEditing")}
           />
         </View>
+        {!titleIsValid && <BodyText>Please enter a valid Title</BodyText>}
         <View style={styles.formControl}>
           <BodyText style={styles.label}>Image URL</BodyText>
           <TextInput
@@ -89,6 +117,7 @@ const EditProductScreen = (props) => {
               style={styles.input}
               value={price}
               onChangeText={(text) => setPrice(text)}
+              keyboardType="numeric"
             />
           </View>
         )}
@@ -128,7 +157,7 @@ export const screenOptions = (navData) => {
   return {
     headerTitle: navData.route.params.productId
       ? "Edit Product"
-      : "Add Product"
+      : "Add Product",
   };
 };
 
