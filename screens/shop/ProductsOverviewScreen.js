@@ -25,7 +25,7 @@ const ProductsOverviewScreen = (props) => {
 
   const loadProducts = useCallback(async () => {
     // we set error null initially to get empty for any re-render
-    setError(null); 
+    setError(null);
     setIsLoading(true);
     // multiple useState calls next to each other will be batched together by react. So setError(), setIsLoading() will not lead to multiple re-render cycle
     try {
@@ -35,7 +35,18 @@ const ProductsOverviewScreen = (props) => {
     }
     setIsLoading(false);
   }, [dispatch, setIsLoading, setError]);
-  
+
+  // we add another useEffect with event listner so when ever this screne get focused it will re-render the screen so we get fresh data loaded in the page
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", loadProducts);
+
+    // clean up when this component is destroyed or has to re-render
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch, loadProducts]);
+
+  // we also need this because for first render, above code will not work, it only when screen has to get focus
   useEffect(() => {
     loadProducts();
   }, [dispatch, loadProducts]);
@@ -51,7 +62,11 @@ const ProductsOverviewScreen = (props) => {
     return (
       <View style={styles.centered}>
         <BodyText>An error occured!</BodyText>
-        <Button title="Try again" color={Colors.primary} onPress={loadProducts}/>
+        <Button
+          title="Try again"
+          color={Colors.primary}
+          onPress={loadProducts}
+        />
       </View>
     );
   }
