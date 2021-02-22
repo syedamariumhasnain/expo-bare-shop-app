@@ -5,32 +5,48 @@ export const CREATE_PRODUCT = "CREATE_PRODUCT";
 export const UPDATE_PRODUCT = "UPDATE_PRODUCT";
 export const SET_PRODUCTS = "SET_PRODUCTS";
 
-// here we dont want data from app to perform action but data from database is provided to reducer to uppdate state data and thus app
+// For Test Case: No product fount (when products.length === 0)
+// put url, "https://shop-app-3caa2-default-rtdb.firebaseio.com/product.json"
+// (correct url but serching in file which dont contain owr data)
+
+// For Test Case: Error occured (try, catch when !response.ok, throw error)
+// put url, "https://shop-app-3caa2-default-rtdb.firebaseio.com/products.jon"
+// (broken the url, for catching server side errors)
+
+// here we are using async await, NOT then catch, so we have to put the code in try catch block, so can easily throw error
 export const fetchProducts = () => {
   return async (dispatch) => {
-    // since it is GET request, don't need to mention "method"
-    const response = await fetch(
-      "https://shop-app-3caa2-default-rtdb.firebaseio.com/products.json"
-    );
-
-    const resData = await response.json();
-    // console.log(resData);
-
-    const loadedProducts = [];
-    // since we need data ina array form, so we are looping through the object and pushing each product in array
-    for (const key in resData) {
-      loadedProducts.push(
-        new Product(
-          key,
-          "u1",
-          resData[key].title,
-          resData[key].imageUrl,
-          resData[key].description,
-          resData[key].price
-        )
+    try {
+      // since it is GET request, don't need to mention "method"
+      const response = await fetch(
+        "https://shop-app-3caa2-default-rtdb.firebaseio.com/products.json"
       );
+ 
+      // returns true if response is in 200 status code range otherwise in 300, 400, 500 code range will return false, fetch by default not throw the error 
+      if(!response.ok) {
+        throw new Error("Something went wrong!");
+      }
+      const resData = await response.json();
+      // console.log(resData);
+
+      const loadedProducts = [];
+      for (const key in resData) {
+        loadedProducts.push(
+          new Product(
+            key,
+            "u1",
+            resData[key].title,
+            resData[key].imageUrl,
+            resData[key].description,
+            resData[key].price
+          )
+        );
+      }
+      dispatch({ type: SET_PRODUCTS, products: loadedProducts });
+    } catch (err) {
+      // send to custom analytics server
+      throw err;
     }
-    dispatch({ type: SET_PRODUCTS, products: loadedProducts });
   };
 };
 
