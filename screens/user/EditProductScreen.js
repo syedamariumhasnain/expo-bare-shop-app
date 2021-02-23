@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useReducer } from "react";
+import React, { useState, useEffect, useCallback, useReducer } from "react";
 import {
   View,
   ScrollView,
@@ -10,6 +10,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
 import Input from "../../components/UI/Input";
 import * as productsAction from "../../store/actions/products";
@@ -47,20 +48,13 @@ const formReducer = (state, action) => {
 };
 
 const EditProductScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+
   const prodId = props.route.params.productId;
   const editProduct = useSelector((state) =>
     state.products.userProducts.find((prod) => prod.id === prodId)
   );
-
-  // const [title, setTitle] = useState(editProduct ? editProduct.title : "");
-  // const [titleIsValid, setTitleIsValid] = useState(false);
-  // const [imageUrl, setImageUrl] = useState(
-  //   editProduct ? editProduct.imageUrl : ""
-  // );
-  // const [price, setPrice] = useState("");
-  // const [description, setDescription] = useState(
-  //   editProduct ? editProduct.description : ""
-  // );
 
   const dispatch = useDispatch();
 
@@ -81,34 +75,59 @@ const EditProductScreen = (props) => {
     formIsValid: editProduct ? true : false,
   });
 
-  const submitHandler = useCallback(() => {
+  // we used useEffect here, so only when the state 'error' changes, it will be triggered
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occurred!", error, [
+        {
+          text: "Okay",
+          onPress: () => {
+            props.navigation.goBack();
+          },
+        },
+      ]);
+    }
+  }, [error]);
+
+  const submitHandler = useCallback(async () => {
     if (!formState.formIsValid) {
       Alert.alert("Wrong Input", "please check the errors in the form", [
         { text: "Okay" },
       ]);
       return;
     }
-    if (editProduct) {
-      dispatch(
-        productsAction.updateProduct(
-          prodId,
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl
-        )
-      );
-    } else {
-      // to convert price from "string" to "number", we write +price
-      dispatch(
-        productsAction.createProduct(
-          formState.inputValues.title,
-          formState.inputValues.description,
-          formState.inputValues.imageUrl,
-          +formState.inputValues.price
-        )
-      );
+
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      if (editProduct) {
+        await dispatch(
+          productsAction.updateProduct(
+            prodId,
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl
+          )
+        );
+      } else {
+        // to convert price from "string" to "number", we write +price
+        await dispatch(
+          productsAction.createProduct(
+            formState.inputValues.title,
+            formState.inputValues.description,
+            formState.inputValues.imageUrl,
+            +formState.inputValues.price
+          )
+        );
+      }
+      props.navigation.goBack();
+    } catch (err) {
+      setError(err.message);
     }
-    props.navigation.goBack();
+
+    setIsLoading(false);
   }, [dispatch, prodId, formState]);
 
   useEffect(() => {
@@ -142,11 +161,15 @@ const EditProductScreen = (props) => {
     [dispatchFormState]
   );
 
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       // behavior= {Platform.OS === "android" ? "position" : "padding"}
-      behavior= "padding"
+      behavior="padding"
       // keyboardVerticalOffset={1}
     >
       <ScrollView>

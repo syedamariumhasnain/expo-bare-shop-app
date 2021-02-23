@@ -22,6 +22,8 @@ export const fetchProducts = () => {
         "https://shop-app-3caa2-default-rtdb.firebaseio.com/products.json"
       );
  
+      // console.log(response);
+
       // returns true if response is in 200 status code range
       if(!response.ok) {
         throw new Error("Something went wrong!");
@@ -52,12 +54,17 @@ export const fetchProducts = () => {
 
 export const deleteProduct = (productId) => {
   return async (dispatch) => {
-    await fetch(
+    const response = await fetch(
       `https://shop-app-3caa2-default-rtdb.firebaseio.com/products/${productId}.json`,
       {
         method: "DELETE"
       }
     );
+
+    if (!response.ok) {
+      throw new Error("Something went wrong!");
+    }
+    
     dispatch({ type: DELETE_PRODUCT, pid: productId });
   };
 };
@@ -80,6 +87,10 @@ export const createProduct = (title, description, imageUrl, price) => {
       }
     );
 
+    if (!response.ok) {
+      throw new Error("Something went wrong!");
+    }
+
     const resData = await response.json();
     // console.log(resData);
 
@@ -99,7 +110,7 @@ export const createProduct = (title, description, imageUrl, price) => {
 
 export const updateProduct = (id, title, description, imageUrl) => {
   return async (dispatch) => {
-    await fetch(
+    const response = await fetch(
       // using `` codes we can pass data dynamically in url
       `https://shop-app-3caa2-default-rtdb.firebaseio.com/products/${id}.json`,
       {
@@ -116,6 +127,10 @@ export const updateProduct = (id, title, description, imageUrl) => {
         }),
       }
     );
+
+    if (!response.ok) {
+        throw new Error("Something went wrong!");
+    }
 
     dispatch({
       type: UPDATE_PRODUCT,

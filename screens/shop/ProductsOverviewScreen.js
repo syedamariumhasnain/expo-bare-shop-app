@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  FlatList,
-  Button,
-  Platform,
-  ActivityIndicator,
-  StyleSheet,
-} from "react-native";
+import { View, FlatList, Button, Platform, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
 import BodyText from "../../components/UI/BodyText";
 import ProductItem from "../../components/shop/ProductItem";
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import * as cartActions from "../../store/actions/cart";
 import * as productsActions from "../../store/actions/products";
 import Colors from "../../constants/colors";
@@ -20,6 +14,7 @@ import Colors from "../../constants/colors";
 const ProductsOverviewScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
+  
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
@@ -72,11 +67,7 @@ const ProductsOverviewScreen = (props) => {
   }
 
   if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={Colors.primary} />
-      </View>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!isLoading && products.length === 0) {
