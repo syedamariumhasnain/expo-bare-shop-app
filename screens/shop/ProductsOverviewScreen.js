@@ -13,37 +13,37 @@ import Colors from "../../constants/colors";
 
 const ProductsOverviewScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState();
-  
+
   const products = useSelector((state) => state.products.availableProducts);
   const dispatch = useDispatch();
 
   const loadProducts = useCallback(async () => {
-    // we set error null initially to get empty for any re-render
     setError(null);
-    setIsLoading(true);
-    // multiple useState calls next to each other will be batched together by react. So setError(), setIsLoading() will not lead to multiple re-render cycle
+    setIsRefreshing(true);
     try {
       await dispatch(productsActions.fetchProducts());
     } catch (err) {
       setError(err.message);
     }
-    setIsLoading(false);
+    setIsRefreshing(false);
   }, [dispatch, setIsLoading, setError]);
 
-  // we add another useEffect with event listner so when ever this screne get focused it will re-render the screen so we get fresh data loaded in the page
   useEffect(() => {
     const unsubscribe = props.navigation.addListener("focus", loadProducts);
 
-    // clean up when this component is destroyed or has to re-render
     return () => {
       unsubscribe();
     };
   }, [dispatch, loadProducts]);
 
-  // we also need this because for first render, above code will not work, it only when screen has to get focus
   useEffect(() => {
-    loadProducts();
+    setIsLoading(true);
+    // we can use then() here because loadProducts() is an async function which returns promise. 
+    loadProducts().then(() => {
+      setIsLoading(false);
+    });
   }, [dispatch, loadProducts]);
 
   const selectItemHandler = (id, title) => {
@@ -78,8 +78,12 @@ const ProductsOverviewScreen = (props) => {
     );
   }
 
+  // On FlatList or ScrollView, its built-in functionality from React Native that we can add "pull to refresh" feature.
+  // It means you can reload the screens while staying on the same screens, not switching screens to reload.
   return (
     <FlatList
+      onRefresh={loadProducts}
+      refreshing={isRefreshing}
       data={products}
       keyExtractor={(item) => item.id}
       renderItem={(itemData) => (
