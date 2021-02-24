@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList, Platform, Button, StyleSheet } from "react-native";
+import { View, FlatList, Alert, Button, StyleSheet } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 
 import Card from "../../components/UI/Card";
@@ -35,20 +35,18 @@ const CartScreen = (props) => {
 
   useEffect(() => {
     if (error) {
-      Alert.alert("An error occurred!", error, [
-        {
-          text: "Okay",
-          onPress: () => {
-            props.navigation.goBack();
-          },
-        },
-      ]);
+      Alert.alert("An error occurred!", error, [{ text: "Okay" }]);
     }
   }, [error]);
 
   const sendOrderHandler = async () => {
+    setError(null);
     setIsLoading(true);
-    await dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+    try {
+      await dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+    } catch (err) {
+      setError(err.message);
+    }
     setIsLoading(false);
   };
 
@@ -58,7 +56,6 @@ const CartScreen = (props) => {
         <BodyText style={styles.summaryText}>
           Total:{" "}
           <BodyText style={styles.amount}>
-            {/* Due to deleting cart products (continious reduction) javascript makes negative value in point, So to avoid that minus sign in our cart total we use this formula */}
             ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
           </BodyText>
         </BodyText>
