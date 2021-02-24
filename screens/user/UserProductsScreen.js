@@ -8,7 +8,7 @@ import BodyText from "../../components/UI/BodyText";
 import CustomHeaderButton from "../../components/UI/CustomHeaderButton";
 import ProductItem from "../../components/shop/ProductItem";
 import Colors from "../../constants/colors";
-import * as productActions from "../../store/actions/products";
+import * as productsActions from "../../store/actions/products";
 
 const UserProductsScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,7 +22,7 @@ const UserProductsScreen = (props) => {
     setIsLoading(true);
 
     try {
-      await dispatch(productActions.fetchProducts());
+      await dispatch(productsActions.fetchProducts());
     } catch (err) {
       setError(err.message);
     }
@@ -54,7 +54,7 @@ const UserProductsScreen = (props) => {
         text: "Yes",
         style: "destructive",
         onPress: () => {
-          dispatch(productActions.deleteProduct(id));
+          dispatch(productsActions.deleteProduct(id));
         },
       }]
     );
