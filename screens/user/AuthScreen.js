@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 
 import Input from "../../components/UI/Input";
 import Card from "../../components/UI/Card";
+import LoadingSpinner from "../../components/UI/LoadingSpinner";
 import Colors from "../../constants/colors";
 import * as authActions from "../../store/actions/auth";
 
@@ -45,7 +46,9 @@ const formReducer = (state, action) => {
 
 const AuthScreen = (props) => {
   const [error, setError] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
+  const [isSignup, setIsSignup] = useState(false);
   const dispatch = useDispatch();
 
   // initializing formReducer with some initial values we are passing as object
@@ -65,13 +68,13 @@ const AuthScreen = (props) => {
     if (error) {
       Alert.alert("An error occurred!", error, [
         {
-          text: "Okay"
+          text: "Okay",
         },
       ]);
     }
   }, [error]);
 
-  const signupHandler = async () => {
+  const authHandler = async () => {
     if (!formState.formIsValid) {
       Alert.alert("Wrong Input", "please check the errors in the form", [
         { text: "Okay" },
@@ -79,16 +82,26 @@ const AuthScreen = (props) => {
       return;
     }
 
-    try {
-      await dispatch(
-        authActions.signup(
-          formState.inputValues.email,
-          formState.inputValues.password
-        )
+    let action;
+    if (isSignup) {
+      action = authActions.signup(
+        formState.inputValues.email,
+        formState.inputValues.password
       );
-    } catch(err) {
+    } else {
+      action = authActions.login(
+        formState.inputValues.email,
+        formState.inputValues.password
+      );
+    }
+    try {
+      setError(null);
+      setIsLoading(true);
+      await dispatch(action);
+    } catch (err) {
       setError(err.message);
     }
+    setIsLoading(false);
   };
 
   // dispatching action for FORM_INPUT_UPDATE along with data we want to use in reducer
@@ -138,17 +151,23 @@ const AuthScreen = (props) => {
               initializeValue=""
             />
             <View style={styles.buttonContainer}>
-              <Button
-                title="Login"
-                color={Colors.primary}
-                onPress={signupHandler}
-              />
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <Button
+                  title={isSignup ? "Sign Up" : "Login"}
+                  color={Colors.primary}
+                  onPress={authHandler}
+                />
+              )}
             </View>
             <View style={styles.buttonContainer}>
               <Button
-                title="Switch to Sign Up"
+                title={`Switch to ${isSignup ? "Login" : "Sign Up"}`}
                 color={Colors.accent}
-                onPress={() => {}}
+                onPress={() => {
+                  setIsSignup((prevState) => !prevState);
+                }}
               />
             </View>
           </ScrollView>
