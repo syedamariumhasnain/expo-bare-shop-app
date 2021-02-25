@@ -100,8 +100,8 @@ const AuthScreen = (props) => {
       await dispatch(action);
     } catch (err) {
       setError(err.message);
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   // dispatching action for FORM_INPUT_UPDATE along with data we want to use in reducer

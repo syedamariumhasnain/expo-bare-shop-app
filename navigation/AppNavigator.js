@@ -1,19 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 import AuthStackNavigator from "./AuthNavigator";
 import MainDrawerNavigator from "./ShopNavigator";
+// import StartupScreen from "../screens/StartupScreen";
 
 const AppNavigator = (props) => {
-  let [isAuth, setIsAuth] = useState(false);
+  // const isAuth = false;
 
-  const authChangeHandler = () => {
-    setIsAuth(!isAuth);
-  }
+  const isAuth = useSelector(state => !!state.auth.token);
+  // const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
+
   return (
     <NavigationContainer>
-      {!isAuth && <AuthStackNavigator />}
       {isAuth && <MainDrawerNavigator />}
+      {!isAuth && <AuthStackNavigator />}
+
+      {/* {isAuth && <MainDrawerNavigator />} */}
+      {/* {!isAuth && didTryAutoLogin && <AuthStackNavigator />} */}
+      {/* {!isAuth && !didTryAutoLogin && <StartupScreen />} */}
     </NavigationContainer>
   );
 };
