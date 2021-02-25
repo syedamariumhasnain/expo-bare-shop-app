@@ -43,8 +43,9 @@ const formReducer = (state, action) => {
   return state;
 };
 
-
 const AuthScreen = (props) => {
+  const [error, setError] = useState();
+
   const dispatch = useDispatch();
 
   // initializing formReducer with some initial values we are passing as object
@@ -60,6 +61,16 @@ const AuthScreen = (props) => {
     formIsValid: false,
   });
 
+  useEffect(() => {
+    if (error) {
+      Alert.alert("An error occurred!", error, [
+        {
+          text: "Okay"
+        },
+      ]);
+    }
+  }, [error]);
+
   const signupHandler = async () => {
     if (!formState.formIsValid) {
       Alert.alert("Wrong Input", "please check the errors in the form", [
@@ -68,12 +79,16 @@ const AuthScreen = (props) => {
       return;
     }
 
-    await dispatch(
-      authActions.signup(
-        formState.inputValues.email,
-        formState.inputValues.password
-      )
-    );
+    try {
+      await dispatch(
+        authActions.signup(
+          formState.inputValues.email,
+          formState.inputValues.password
+        )
+      );
+    } catch(err) {
+      setError(err.message);
+    }
   };
 
   // dispatching action for FORM_INPUT_UPDATE along with data we want to use in reducer
