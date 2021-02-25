@@ -1,5 +1,5 @@
 import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
+// import { NavigationContainer } from "@react-navigation/native";
 import {
   createStackNavigator,
   CardStyleInterpolators,
@@ -161,12 +161,12 @@ const MainDrawerNavigator = (props) => {
   );
 };
 
-const AppNavigator = (props) => {
-  return (
-    <NavigationContainer>
-      <MainDrawerNavigator />
-    </NavigationContainer>
-  );
-};
+// const AppNavigator = (props) => {
+//   return (
+//     // <NavigationContainer>
+//       <MainDrawerNavigator />
+//     // </NavigationContainer>
+//   );
+// };
 
-export default AppNavigator;
+export default MainDrawerNavigator;
