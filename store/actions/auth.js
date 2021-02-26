@@ -1,5 +1,17 @@
-export const SIGNUP = "SIGNUP";
-export const LOGIN = "LOGIN";
+import { setItem } from "../../services/localStorage";
+
+// export const SIGNUP = "SIGNUP";
+// export const LOGIN = "LOGIN";
+export const AUTHENTICATE = "AUTHENTICATE";
+export const SET_DID_TRY_AL = "SET_DID_TRY_AL";
+
+export const authenticate = (userId, token) => {
+  return { type: AUTHENTICATE, userId: userId, token: token };
+};
+
+export const setDidTryAL = () => {
+  return { type: SET_DID_TRY_AL };
+};
 
 export const signup = (email, password) => {
   return async (dispatch) => {
@@ -25,16 +37,20 @@ export const signup = (email, password) => {
       let message = "Something went wrong!";
       if (errorId === "EMAIL_EXISTS") {
         message = "This email exists already!";
-      } 
+      }
       throw new Error(message);
     }
 
     const resData = await response.json();
     console.log(resData);
-    dispatch({ type: SIGNUP, token: resData.idToken, userId: resData.localId });
+    dispatch(authenticate(resData.localId, resData.idToken));
+
+    const expirationDate = new Date(
+      new Date().getTime() + parseInt(resData.expiresIn) * 1000
+    );
+    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
 };
-
 
 export const login = (email, password) => {
   return async (dispatch) => {
@@ -68,6 +84,20 @@ export const login = (email, password) => {
 
     const resData = await response.json();
     console.log(resData);
-    dispatch({ type: LOGIN, token: resData.idToken, userId: resData.localId });
+    dispatch(authenticate(resData.localId, resData.idToken));
+
+    // new Date().getTime() returns time in milliseconds, but resData.expiresIn is in seconds thats why we * it with 1000 to get time in milliseconds and then apply new Date(...) to convert time from huge milliseconds to concrete date object.
+    const expirationDate = new Date(
+      new Date().getTime() + parseInt(resData.expiresIn) * 1000
+    );
+    saveDataToStorage(resData.idToken, resData.localId, expirationDate);
   };
+};
+
+const saveDataToStorage = (token, userId, expirationDate) => {
+  setItem("userData", {
+    token: token,
+    userId: userId,
+    expiryDate: expirationDate.toISOString(),
+  });
 };

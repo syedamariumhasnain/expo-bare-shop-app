@@ -4,22 +4,19 @@ import { useSelector } from "react-redux";
 
 import AuthStackNavigator from "./AuthNavigator";
 import MainDrawerNavigator from "./ShopNavigator";
-// import StartupScreen from "../screens/StartupScreen";
+import StartupScreen from "../screens/StartupScreen";
 
 const AppNavigator = (props) => {
   // const isAuth = false;
 
   const isAuth = useSelector(state => !!state.auth.token);
-  // const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
+  const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
 
   return (
     <NavigationContainer>
       {isAuth && <MainDrawerNavigator />}
-      {!isAuth && <AuthStackNavigator />}
-
-      {/* {isAuth && <MainDrawerNavigator />} */}
-      {/* {!isAuth && didTryAutoLogin && <AuthStackNavigator />} */}
-      {/* {!isAuth && !didTryAutoLogin && <StartupScreen />} */}
+      {!isAuth && didTryAutoLogin && <AuthStackNavigator />}
+      {!isAuth && !didTryAutoLogin && <StartupScreen />}
     </NavigationContainer>
   );
 };
