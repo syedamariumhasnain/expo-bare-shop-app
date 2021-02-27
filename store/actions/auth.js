@@ -10,7 +10,6 @@ let timer;
 
 export const authenticate = (userId, token, expiryTime) => {
   return (dispatch) => {
-    // dispatch(removeItem("userData"));
     dispatch(setLogoutTimer(expiryTime));
     dispatch({ type: AUTHENTICATE, userId: userId, token: token });
   };
@@ -115,7 +114,6 @@ export const login = (email, password) => {
 
 export const logout = () => {
   clearLogoutTimer();
-  // await getItem("userData");
   removeItem("userData");
   return { type: LOGOUT };
 };
@@ -131,7 +129,8 @@ const setLogoutTimer = (expirationTime) => {
   return (dispatch) => {
     timer = setTimeout(() => {
       dispatch(logout());
-    }, expirationTime / 100);
+    }, expirationTime);
+    // }, expirationTime / 100);
   };
 };
 
