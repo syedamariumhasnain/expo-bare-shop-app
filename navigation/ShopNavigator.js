@@ -27,6 +27,7 @@ import EditProductScreen, {
   screenOptions as EditProductOptions,
 } from "../screens/user/EditProductScreen";
 
+import CustomDrawer from "../components/UI/CustomDrawer";
 import Colors from "../constants/colors";
 
 const defaultStackNavOptions = {
@@ -111,6 +112,7 @@ const MainDrawerNavigator = (props) => {
           fontFamily: "open-sans-bold",
         },
       }}
+      drawerContent={(props) => <CustomDrawer {...props} />}
       // screenOptions={{
       //   headerShown: false,
       // }}

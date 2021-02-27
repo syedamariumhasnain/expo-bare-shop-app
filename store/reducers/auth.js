@@ -1,4 +1,4 @@
-import { AUTHENTICATE, SET_DID_TRY_AL } from "../actions/auth";
+import { AUTHENTICATE, LOGOUT, SET_DID_TRY_AL } from "../actions/auth";
 
 const initialState = {
   token: null,
@@ -6,7 +6,7 @@ const initialState = {
   didTryAutoLogin: false,
 };
 
-export default (status = initialState, action) => {
+export default (state = initialState, action) => {
   switch (action.type) {
     case AUTHENTICATE:
       return {
@@ -14,6 +14,11 @@ export default (status = initialState, action) => {
         userId: action.userId,
         didTryAutoLogin: true,
       };
+    case LOGOUT:
+      return {
+        ...initialState,
+        didTryAutoLogin: true, 
+      }
     case SET_DID_TRY_AL:
       return {
         ...state,
@@ -25,6 +30,6 @@ export default (status = initialState, action) => {
     //     userId: action.userId
     //   };
     default:
-      return status;
+      return state;
   }
 };
